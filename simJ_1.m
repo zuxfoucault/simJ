@@ -1,6 +1,7 @@
 %
 % Similarity judgemant:
 % triangular display
+% use top figure as probe and choose which of the two figures in the bottom most similar as top one
 %
 
 clear; clf;
@@ -69,30 +70,30 @@ try
     KbWait;
     while KbCheck; end;
     
-    for nTrial = 1:trial,
+    % Image position and scaling
+    imx = 530;
+    imy = 0;
+    imsx = 0.9;
+    imsy = 0.9;
+    destT = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
+        (rect(4)*imsy) + imy];
+    
+    imx = 140;
+    imy = 500;
+    destL = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
+        (rect(4)*imsy) + imy];
+    
+    imx = 940;
+    imy = 500;
+    destR = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
+        (rect(4)*imsy) + imy];
+    
+    for nTrial = 1:trial, % 1:trial
         
         % Extract img name
         imnameT = stiLabell{1, nTrial};
         imnameL = stiLabell{2, nTrial};
         imnameR = stiLabell{3, nTrial};
-        
-        % Image position and scaling
-        imx = 530;
-        imy = 0;
-        imsx = 0.9;
-        imsy = 0.9;
-        destT = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
-            (rect(4)*imsy) + imy];
-        
-        imx = 140;
-        imy = 500;
-        destL = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
-            (rect(4)*imsy) + imy];
-        
-        imx = 940;
-        imy = 500;
-        destR = [rect(1) + imx, rect(2) + imy, (rect(3)*imsx) + imx, ...
-            (rect(4)*imsy) + imy];
         
         % Read image
         imgT = imread(imnameT, 'bmp');
@@ -154,4 +155,3 @@ catch err,
     %Screen('Preference', 'SuppressAllWarnings', oldSupressAllWarnings);
         
 end;
-       
