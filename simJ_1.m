@@ -71,7 +71,6 @@ try
     
     for nTrial = 1:trial,
         
-        
         % Extract img name
         imnameT = stiLabell{1, nTrial};
         imnameL = stiLabell{2, nTrial};
