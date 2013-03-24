@@ -61,7 +61,7 @@ try
     Screen('FillRect', wPtr, white);
     
    
-    % Show instuction
+    % Show instruction
     imnameI = 'instro.bmp';
     imgI = imread(imnameI, 'bmp');
     textureIndexI = Screen('MakeTexture', wPtr, double(imgI));
