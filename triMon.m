@@ -131,7 +131,7 @@ try
     
     
     % Trial loops
-    for nTrial = 1:12, % 1:trial
+    for nTrial = 1:trial, % 1:trial
              
         % Extract img name        
         imnameT = stiLabell{1, nTrial};
@@ -161,17 +161,16 @@ try
             Screen(wPtr, 'Flip');
         
         FlushEvents('keyDown');
-                        
-        % Get response
-        %responsetime(nTrial) = KbWait;
-        %[KeyIsDown, t, keyCode] = KbCheck;
       
         % Mondrian loop
         nMon = 1;
         KeyIsDown = 0;
         while KeyIsDown == 0,
+            
+            % Get response
             [KeyIsDown, responsetime(nTrial), keyCode] = KbCheck;
             response{nTrial} = KbName(keyCode);
+            
             if nMon == 67, nMon = 1; end;
             imnameM = monLabels{nMon};
             imgM = imread(imnameM, 'jpg');
