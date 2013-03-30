@@ -1,6 +1,6 @@
 %
 % Similarity judgemant:
-% triangular display with Mondrian patch
+% triangular display with Mondrian patch and Alpha-blending
 %
 % Use top figure as probe and choose which of the two figures 
 % in the bottom most similar as top one
@@ -111,10 +111,17 @@ try
     imy = 520;
     destMR = [rectI(1) + imx, rectI(2) + imy, (rectI(3)*imsx) + imx, ...
         (rectI(4)*imsy) + imy];
-           
+    
+    % Blending image
+    destA = [destT(1), destT(2), destT(3), (destT(4) - 15)];
+    fA = 0.5; % fading rate
+    
+
     % Open display window mg
     screenNum = 0;
     [wPtr, rect] = Screen('OpenWindow', screenNum);
+    % enable Alpha-Blending
+    Screen(wPtr,'BlendFunction',GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     HideCursor;
     white = WhiteIndex(wPtr);
     Screen('FillRect', wPtr, white);
@@ -155,7 +162,10 @@ try
         Screen('DrawTexture', wPtr, textureIndexR, rectI, destR);
         Screen('DrawTexture', wPtr, textureIndexM, rectM, destM);
         Screen('DrawTexture', wPtr, textureIndexL, rectI, destML);
-        Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);
+        Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);        
+        alB = 230; % starting Alpha value
+        Screen('FillRect', wPtr, [255 255 255 alB], destA);
+        
         
         [VBLTimestamp(nTrial), StimulusOnsetTime(nTrial)] = ...
             Screen(wPtr, 'Flip');
@@ -181,8 +191,10 @@ try
             Screen('DrawTexture', wPtr, textureIndexM, rectM, destM);
             Screen('DrawTexture', wPtr, textureIndexL, rectI, destML);
             Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);
+            Screen('FillRect', wPtr, [255 255 255 alB], destA);
             Screen(wPtr, 'Flip');
             nMon = nMon + 1;
+            if alB ~= 0, alB = alB - fA; end;
         end;
         
         response{nTrial} = KbName(keyCode);
