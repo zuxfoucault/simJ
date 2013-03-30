@@ -2,7 +2,7 @@
 % Similarity judgemant:
 % triangular display with Mondrian patch and Alpha-blending
 %
-% Use top figure as probe and choose which of the two figures 
+% Use top figure as probe and choose which of the two figures
 % in the bottom most similar as top one
 %
 
@@ -92,7 +92,7 @@ try
     imy = 520;
     destR = [rectI(1) + imx, rectI(2) + imy, (rectI(3)*imsx) + imx, ...
         (rectI(4)*imsy) + imy];
-     
+    
     % Mondrial patch size and position
     imsMx = 600/266*imsx*1.5;
     imsMy = 600/266*imsy;
@@ -113,10 +113,10 @@ try
         (rectI(4)*imsy) + imy];
     
     % Blending image
-    destA = [destT(1), destT(2), destT(3), (destT(4) - 15)];
-    fA = 0.5; % fading rate
+    destA = [destT(1), destT(2), destT(3), (destT(4) - 30)];
+    fA = 0.5; % Alpha image fading rate
     
-
+    
     % Open display window mg
     screenNum = 0;
     [wPtr, rect] = Screen('OpenWindow', screenNum);
@@ -139,14 +139,14 @@ try
     
     % Trial loops
     for nTrial = 1:trial, % 1:trial
-             
-        % Extract img name        
+        
+        % Extract img name
         imnameT = stiLabell{1, nTrial};
         imnameL = stiLabell{2, nTrial};
         imnameR = stiLabell{3, nTrial};
         imnameM = monLabels{nTrial};
         
-        % Read image       
+        % Read image
         imgT = imread(imnameT, 'bmp');
         imgL = imread(imnameL, 'bmp');
         imgR = imread(imnameR, 'bmp');
@@ -154,7 +154,7 @@ try
         
         textureIndexT = Screen('MakeTexture', wPtr, double(imgT));
         textureIndexL = Screen('MakeTexture', wPtr, double(imgL));
-        textureIndexR = Screen('MakeTexture', wPtr, double(imgR));               
+        textureIndexR = Screen('MakeTexture', wPtr, double(imgR));
         textureIndexM = Screen('MakeTexture', wPtr, double(imgM));
         
         Screen('DrawTexture', wPtr, textureIndexT, rectI, destT);
@@ -162,7 +162,7 @@ try
         Screen('DrawTexture', wPtr, textureIndexR, rectI, destR);
         Screen('DrawTexture', wPtr, textureIndexM, rectM, destM);
         Screen('DrawTexture', wPtr, textureIndexL, rectI, destML);
-        Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);        
+        Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);
         alB = 230; % starting Alpha value
         Screen('FillRect', wPtr, [255 255 255 alB], destA);
         
@@ -171,30 +171,37 @@ try
             Screen(wPtr, 'Flip');
         
         FlushEvents('keyDown');
-      
+        
         % Mondrian loop
         nMon = 1;
         KeyIsDown = 0;
         while KeyIsDown == 0,
             
-            % Get response
-            [KeyIsDown, responsetime(nTrial), keyCode] = KbCheck;
-            response{nTrial} = KbName(keyCode);
+            tic; %WaitSecs(0.0753); 
             
             if nMon == 67, nMon = 1; end;
             imnameM = monLabels{nMon};
             imgM = imread(imnameM, 'jpg');
-            textureIndexM = Screen('MakeTexture', wPtr, double(imgM));            
-            Screen('DrawTexture', wPtr, textureIndexT, rectI, destT);
-            Screen('DrawTexture', wPtr, textureIndexL, rectI, destL);
-            Screen('DrawTexture', wPtr, textureIndexR, rectI, destR);
-            Screen('DrawTexture', wPtr, textureIndexM, rectM, destM);
-            Screen('DrawTexture', wPtr, textureIndexL, rectI, destML);
-            Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);
-            Screen('FillRect', wPtr, [255 255 255 alB], destA);
-            Screen(wPtr, 'Flip');
+            textureIndexM = Screen('MakeTexture', wPtr, double(imgM));
+            
+            % Mondrian flash rate control                                 
+            while toc < 0.0753;
+                
+                % Get response
+                [KeyIsDown, responsetime(nTrial), keyCode] = KbCheck;
+                response{nTrial} = KbName(keyCode);
+                Screen('DrawTexture', wPtr, textureIndexT, rectI, destT);
+                Screen('DrawTexture', wPtr, textureIndexL, rectI, destL);
+                Screen('DrawTexture', wPtr, textureIndexR, rectI, destR);
+                Screen('DrawTexture', wPtr, textureIndexM, rectM, destM);
+                Screen('DrawTexture', wPtr, textureIndexL, rectI, destML);
+                Screen('DrawTexture', wPtr, textureIndexR, rectI, destMR);
+                Screen('FillRect', wPtr, [255 255 255 alB], destA);
+                Screen(wPtr, 'Flip');
+                if alB ~= 0, alB = alB - fA; end;
+            end;
+            
             nMon = nMon + 1;
-            if alB ~= 0, alB = alB - fA; end;
         end;
         
         response{nTrial} = KbName(keyCode);
@@ -235,6 +242,6 @@ catch err,
     
     % Restore preferences
     %Screen('Preference', 'VisualDebugLevel', oldVisualDebugLevel);
-    %Screen('Preference', 'SuppressAllWarnings', oldSupressAllWarnings);    
+    %Screen('Preference', 'SuppressAllWarnings', oldSupressAllWarnings);
     
 end;
