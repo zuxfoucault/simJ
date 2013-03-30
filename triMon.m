@@ -185,11 +185,12 @@ try
             textureIndexM = Screen('MakeTexture', wPtr, double(imgM));
             
             % Mondrian flash rate control                                 
-            while toc < 0.0753;
+            while toc < 0.0753 && KeyIsDown == 0,
                 
                 % Get response
                 [KeyIsDown, responsetime(nTrial), keyCode] = KbCheck;
                 response{nTrial} = KbName(keyCode);
+                
                 Screen('DrawTexture', wPtr, textureIndexT, rectI, destT);
                 Screen('DrawTexture', wPtr, textureIndexL, rectI, destL);
                 Screen('DrawTexture', wPtr, textureIndexR, rectI, destR);
